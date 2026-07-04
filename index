@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproductores Ahorro de Datos</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: black; overflow: hidden; }
+        #player { width: 100%; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="player"></div>
+    <script>
+        // Extraemos el ID de la lista de reproducción enviado desde la app B4A
+        const urlParams = new URLSearchParams(window.location.search);
+        const playlistId = urlParams.get('list') || 'PLb5uR8g5VfXU9T4XyBvB9uB8c8V0v1A2B'; // ID de respaldo
+
+        // Carga la API de IFrame de YouTube de forma asíncrona
+        var tag = document.createElement('script');
+        tag.src = "https://youtube.com";
+        var firstScriptTag = document.getElementsByTagName('script');
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                playerVars: {
+                    'listType': 'playlist',
+                    'list': playlistId,
+                    'autoplay': 1,
+                    'controls': 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // "tiny" fuerza 144p y "small" fuerza 240p. La combinación de ambas asegura la mínima resolución.
+            event.target.setPlaybackQuality('tiny');
+            event.target.setPlaybackQuality('small');
+            event.target.playVideo();
+        }
+    </script>
+</body>
+</html>
